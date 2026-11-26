@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Les traiteurs chinois</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Syne:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* VOICE: quiet, elegant, an homage; nothing shouts
    IDEA: a fine-line print of Paris's streets hung in a gallery, with small polaroids placed lightly on it
    PICTURE: the full street network in hairline ink, the Seine read only as the gap between quays; polaroids appear as you zoom
-   COLOUR and TYPE: warm paper white, graphite ink, one muted vermilion for developed places; Cormorant Garamond + Manrope
+   COLOUR and TYPE: warm paper white, graphite ink, one muted vermilion for developed places; Cormorant Garamond + Syne (sous-titre)
    LAYOUT: full-bleed map, a small title block bottom-left, discreet round controls bottom-right, a calm lightbox */
 :root{--paper:#efe9dc;--ink:#2a2826;--soft:#8b867d;--line:rgba(42,40,38,.14);--acc:#a8473b}
 *{box-sizing:border-box;min-width:0}
-html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font:14px/1.5 Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font:15px/1.5 "Cormorant Garamond",Georgia,serif;-webkit-font-smoothing:antialiased}
 #app{position:relative;width:100%;height:100dvh;overflow:hidden;touch-action:none;cursor:grab}
 #app.drag{cursor:grabbing}
 #cv{position:absolute;inset:0;width:100%;height:100%}
@@ -48,12 +48,12 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var
 .title{left:max(18px,3vw);bottom:max(18px,3vh);pointer-events:none;transition:opacity .5s}
 #app.zoomed .title{opacity:0}
 .title h1{font:italic 400 clamp(34px,5vw,56px)/.95 "Cormorant Garamond",Georgia,serif;margin:0;letter-spacing:-.01em}
-.title h2{margin:6px 0 0;font:italic 400 clamp(16px,2vw,21px)/1.15 "Cormorant Garamond",Georgia,serif;color:#5a5249;letter-spacing:.005em}
-.title h2 b{font-weight:500;color:var(--ink)}
+.title h2{margin:10px 0 0;font:400 clamp(10.5px,1.1vw,12.5px)/1.3 Syne,system-ui,sans-serif;text-transform:uppercase;color:#5a5249;letter-spacing:.14em}
+.title h2 b{font-weight:600;color:var(--ink)}
 .title p{margin:10px 0 0;font-size:12.5px;color:var(--soft);letter-spacing:.01em}
 .title p b{font-weight:600;color:var(--ink)}
 .zc{display:none!important;right:max(14px,2.4vw);bottom:max(18px,3vh);display:flex;flex-direction:column;gap:8px}
-.zc button{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:rgba(246,243,237,.88);backdrop-filter:blur(6px);color:var(--ink);cursor:pointer;display:grid;place-items:center;font:400 20px Manrope,sans-serif;transition:border-color .2s}
+.zc button{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:rgba(246,243,237,.88);backdrop-filter:blur(6px);color:var(--ink);cursor:pointer;display:grid;place-items:center;font:400 20px "Cormorant Garamond",Georgia,serif;transition:border-color .2s}
 .zc button:hover{border-color:rgba(42,40,38,.4)}
 .hint{left:50%;top:max(16px,2.4vh);transform:translateX(-50%);font-size:12px;color:var(--soft);background:rgba(246,243,237,.85);padding:6px 12px;border-radius:20px;border:1px solid var(--line);white-space:nowrap;transition:opacity .6s;pointer-events:none}
 #focus{position:absolute;inset:0;z-index:15;pointer-events:none}
