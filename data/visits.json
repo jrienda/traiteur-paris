@@ -1,0 +1,4 @@
+{
+ "_doc": "Visites photographiées. front = photo principale, back = photo secrète (optionnelle). date = AAAA-MM-JJ.",
+ "visits": []
+}
