@@ -9,7 +9,7 @@ Usage :
   * match sûr (≤ 60 m et 2e candidat ≥ 1,8× plus loin)  -> continue
   * sinon -> affiche les candidats et sort avec le code 2 (relancer avec --id N)
 - Date : DateTimeOriginal EXIF, sinon aujourd'hui (ou --date).
-- Écrit photos/<id>/front.webp (et back.webp), sans métadonnées, 1400 px max.
+- Écrit photos/<id>/front.webp (et back.webp), sans métadonnées, 2400 px max.
 - Met à jour data/visits.json (remplace la visite existante du même id).
 Sortie finale : une ligne JSON « RESULT {...} » lisible par Claude.
 """
@@ -18,7 +18,7 @@ import argparse, datetime as dt, json, math, os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLACES = os.path.join(ROOT, "data", "places.json")
 VISITS = os.path.join(ROOT, "data", "visits.json")
-MAXPX, QUALITY = 1400, 82
+MAXPX, QUALITY = 2400, 90
 SURE_M, RATIO, SHOW_M = 60, 1.8, 250
 
 try:
