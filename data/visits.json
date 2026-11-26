@@ -1,4 +1,10 @@
 {
  "_doc": "Visites photographiées. front = photo principale, back = photo secrète (optionnelle). date = AAAA-MM-JJ.",
- "visits": []
+ "visits": [
+  {
+   "id": 71,
+   "date": "2026-11-26",
+   "front": "photos/71/front.webp"
+  }
+ ]
 }
