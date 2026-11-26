@@ -29,6 +29,13 @@ Javier envoie 1 ou 2 photos et dit « añade esto ».
 Pas de GPS (photo partagée depuis iPhone sans localisation) : utilise l'enseigne, et rappelle-lui « Options → Inclure la localisation ».
 HEIC : nécessite `pip install -r scripts/requirements.txt` (pillow-heif).
 
+## Inbox (originaux avec GPS)
+Javier peut déposer les originaux dans `inbox/` (Safari → github.com → Add file → Upload files → Parcourir/Fichiers).
+L'action GitHub `.github/workflows/inbox.yml` lance `scripts/process_inbox.py` : match GPS sûr → visite ajoutée et fichier supprimé ;
+sinon le fichier reste et est listé dans `inbox/A_VERIFIER.txt`. Si Javier demande « revisa la bandeja », traite ces cas
+à la main (`add_photo.py inbox/X --id N`, en lisant l'enseigne), puis supprime les fichiers traités.
+Les pièces jointes du chat Claude arrivent sans EXIF (pas de GPS ni date) : identifier par l'enseigne.
+
 ## Règles de design (validées par Javier — ne pas changer sans demande)
 - Papier crème avec grain/fibres/taches **solidaires de la carte** (bougent et zooment avec elle) ; seul le léger vignettage est fixe à l'écran. La feuille ne montre jamais de bord (zoom/pan bornés).
 - Encre brun-noir chaud, trait avec grain ; l'eau en bleu-gris aquarelle, avec grain aussi.
