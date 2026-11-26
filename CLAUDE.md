@@ -33,7 +33,7 @@ HEIC : nécessite `pip install -r scripts/requirements.txt` (pillow-heif).
 - Papier crème avec grain/fibres/taches **solidaires de la carte** (bougent et zooment avec elle) ; seul le léger vignettage est fixe à l'écran. La feuille ne montre jamais de bord (zoom/pan bornés).
 - Encre brun-noir chaud, trait avec grain ; l'eau en bleu-gris aquarelle, avec grain aussi.
 - Seuls les lieux photographiés ont une carte ; les autres = points d'encre très discrets, non cliquables.
-- Carte : papier blanc chaud, ombres en couches, film légèrement délavé (Polaroid). Ne pas écrire « polaroid » dans l'interface.
+- Carte : papier blanc chaud, ombres en couches. Photos affichées telles quelles (aucun filtre, vignette ni grain). Ne pas écrire « polaroid » dans l'interface.
 - Coin supérieur droit plié **uniquement** si photo secrète. Clic sur le coin → rotation 3D, le dos montre la photo secrète, **sans légende**, coin plié côté gauche.
 - Clic sur une carte → zoom vers le centre, fond assombri en sépia (pas noir), transition douce ; clic sur la carte → retour exact à sa place.
 - Pas de boutons de contrôle visibles. Polices : Cormorant Garamond (titres/légendes), Manrope (UI).
