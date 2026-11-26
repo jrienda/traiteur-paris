@@ -12,6 +12,23 @@
    "front": "photos/71/front.webp"
   },
   {
+   "id": 49,
+   "date": "2026-11-27",
+   "front": "photos/49/front.webp"
+  },
+  {
+   "id": 51,
+   "date": "2026-11-27",
+   "front": "photos/51/front.webp",
+   "back": "photos/51/back.webp"
+  },
+  {
+   "id": 53,
+   "date": "2026-11-27",
+   "front": "photos/53/front.webp",
+   "back": "photos/53/back.webp"
+  },
+  {
    "id": 54,
    "date": "2026-11-27",
    "front": "photos/54/front.webp"
@@ -76,6 +93,22 @@
    "id": 68,
    "date": "2026-11-27",
    "front": "photos/68/front.webp"
+  },
+  {
+   "id": 70,
+   "date": "2026-11-27",
+   "front": "photos/70/front.webp"
+  },
+  {
+   "id": 303,
+   "date": "2026-11-27",
+   "front": "photos/303/front.webp",
+   "back": "photos/303/back.webp"
+  },
+  {
+   "id": 304,
+   "date": "2026-11-27",
+   "front": "photos/304/front.webp"
   }
  ]
 }
