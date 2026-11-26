@@ -24,7 +24,7 @@ SURE_M, RATIO, SHOW_M = 60, 1.8, 250
 try:
     from PIL import Image, ImageOps
 except ImportError:
-    sys.exit("Pillow manquant : pip install -r requirements.txt")
+    sys.exit("Pillow manquant : pip install -r scripts/requirements.txt")
 try:
     import pillow_heif  # HEIC/HEIF (iPhone)
     pillow_heif.register_heif_opener()
@@ -34,7 +34,7 @@ except ImportError:
 
 def open_img(path):
     if path.lower().endswith((".heic", ".heif")) and pillow_heif is None:
-        sys.exit("Fichier HEIC : installer pillow-heif (pip install -r requirements.txt)")
+        sys.exit("Fichier HEIC : installer pillow-heif (pip install -r scripts/requirements.txt)")
     return Image.open(path)
 
 

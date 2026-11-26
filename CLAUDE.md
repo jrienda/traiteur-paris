@@ -27,7 +27,7 @@ Javier envoie 1 ou 2 photos et dit « añade esto ».
 3. Vérifie `data/visits.json`, commit (`Ajoute <nom>`), push sur `main` → Vercel publie seul (~1 min).
 4. Réponds en une ligne : nom, adresse, date, avec ou sans photo secrète.
 Pas de GPS (photo partagée depuis iPhone sans localisation) : utilise l'enseigne, et rappelle-lui « Options → Inclure la localisation ».
-HEIC : nécessite `pip install -r requirements.txt` (pillow-heif).
+HEIC : nécessite `pip install -r scripts/requirements.txt` (pillow-heif).
 
 ## Règles de design (validées par Javier — ne pas changer sans demande)
 - Papier crème avec grain/fibres/taches **solidaires de la carte** (bougent et zooment avec elle) ; seul le léger vignettage est fixe à l'écran. La feuille ne montre jamais de bord (zoom/pan bornés).
