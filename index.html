@@ -19,7 +19,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var
 #app.drag{cursor:grabbing}
 #base{position:absolute;left:0;top:0;will-change:transform;pointer-events:none}
 #base>*{position:absolute;inset:0;width:100%;height:100%}
-#grain{mix-blend-mode:multiply;opacity:.45}
+#grain{opacity:.55}
 #paper{background-color:var(--paper)}
 #vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 120% 95% at 50% 45%,rgba(0,0,0,0) 55%,rgba(110,84,52,.10) 82%,rgba(90,66,40,.20));mix-blend-mode:multiply}
 #world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
@@ -160,24 +160,12 @@ function draw(){dirty=false;R0={tx,ty,s};base.style.transform='none';const TX=tx
 
 let PAPER_OK=false;
 function mkPaper(){try{
-  const R=(a,b)=>a+Math.random()*(b-a);
-  // fine grain + fibres, 1024px tile, 512 css px at s=1 (moves & scales with the map)
-  const a=document.createElement('canvas');a.width=a.height=1024;const g=a.getContext('2d');
-  const im=g.createImageData(1024,1024),d=im.data;
-  for(let i=0;i<d.length;i+=4){const v=Math.random();const dark=v<.5;const c=dark?70:255;d[i]=c;d[i+1]=dark?58:250;d[i+2]=dark?44:240;d[i+3]=dark?(v<.04?34:v*22):((v-.5)*30)}
+  // plain paper colour + fine monochrome grain only (no fibres, no stains)
+  const a=document.createElement('canvas');a.width=a.height=256;const g=a.getContext('2d');
+  const im=g.createImageData(256,256),d=im.data;
+  for(let i=0;i<d.length;i+=4){const v=Math.random();const dark=v<.5;d[i]=dark?60:255;d[i+1]=dark?50:252;d[i+2]=dark?40:246;d[i+3]=dark?(.5-v)*70:(v-.5)*50}
   g.putImageData(im,0,0);
-  g.lineCap='round';
-  for(let k=0;k<1680;k++){const x=R(0,1024),y=R(0,1024),L=R(6,26),an=R(0,Math.PI*2),cu=R(-6,6),dark=Math.random()<.55;
-    g.strokeStyle=dark?`rgba(90,70,48,${R(.05,.12)})`:`rgba(255,253,246,${R(.25,.55)})`;g.lineWidth=R(.5,1.1);
-    for(const ox of [-1024,0,1024])for(const oy of [-1024,0,1024]){g.beginPath();g.moveTo(x+ox,y+oy);g.quadraticCurveTo(x+ox+Math.cos(an)*L/2-Math.sin(an)*cu,y+oy+Math.sin(an)*L/2+Math.cos(an)*cu,x+ox+Math.cos(an)*L,y+oy+Math.sin(an)*L);g.stroke()}}
-  // mottling / foxing, 768px tile shown at 900 css px
-  const b=document.createElement('canvas');b.width=2600;b.height=Math.round(2600*H/W);const h=b.getContext('2d');
-  const blot=(x,y,r,col)=>{const gr=h.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,col);gr.addColorStop(1,'rgba(0,0,0,0)');h.fillStyle=gr;h.fillRect(x-r,y-r,2*r,2*r)};
-  const BW=b.width,BH=b.height;
-  for(let k=0;k<380;k++)blot(R(0,BW),R(0,BH),R(80,320),`rgba(150,118,78,${R(.012,.032)})`);
-  for(let k=0;k<260;k++)blot(R(0,BW),R(0,BH),R(60,260),`rgba(255,252,244,${R(.05,.12)})`);
-  for(let k=0;k<300;k++)blot(R(0,BW),R(0,BH),R(1,3.2),`rgba(140,98,52,${R(.10,.24)})`);
-  const P=$('paper');P.style.backgroundImage=`url(${a.toDataURL()}),url(${b.toDataURL()})`;const V=$('grain');V.style.backgroundImage=`url(${a.toDataURL()})`;PAPER_OK=true;
+  const V=$('grain');V.style.backgroundImage=`url(${a.toDataURL()})`;PAPER_OK=true;
 }catch(e){}}
 mkPaper();
 const WM={"x": 4494, "y": 990, "w": 9828, "h": 8346};const wImg=new Image();wImg.onload=()=>{dirty=true;req()};wImg.src='water.png?v=2';
@@ -187,7 +175,7 @@ let inkPat=null;(function(){try{const c=document.createElement('canvas');c.width
   for(let k=0;k<90;k++){const x=Math.random()*256,y=Math.random()*256,r=.6+Math.random()*1.6;g.globalAlpha=.35+Math.random()*.5;for(const ox of [-256,0,256])for(const oy of [-256,0,256]){g.beginPath();g.arc(x+ox,y+oy,r,0,7);g.fill()}}
   inkPat=ctx.createPattern(c,'repeat')}catch(e){}})();
 const req=()=>{if(!raf)raf=requestAnimationFrame(frame)};
-const paperEl=$('paper'),vigEl=$('grain');function paperSync(X,Y){if(!PAPER_OK)return;const k=s/.5,p=`${X}px ${Y}px`;paperEl.style.backgroundSize=`${512*k}px ${512*k}px,${5*W*s}px ${5*H*s}px`;paperEl.style.backgroundPosition=`${p},${X-2*W*s}px ${Y-2*H*s}px`;paperEl.style.backgroundRepeat='repeat,no-repeat';vigEl.style.backgroundSize=`${512*k}px ${512*k}px`;vigEl.style.backgroundPosition=p}
+const vigEl=$('grain');function paperSync(X,Y){if(!PAPER_OK)return;vigEl.style.backgroundSize='128px 128px';vigEl.style.backgroundPosition=`${X}px ${Y}px`}
 function sheetClamp(){const r=app.getBoundingClientRect();if(!r.width)return;const X0=-2*W,X1=3*W,Y0=-2*H,Y1=3*H;
   s=Math.max(s,r.width/(X1-X0),r.height/(Y1-Y0));tx=Math.min(r.width/2,Math.max(r.width/2-W*s,tx));ty=Math.min(r.height/2,Math.max(r.height/2-H*s,ty));tx=Math.min(-X0*s,Math.max(r.width-X1*s,tx));ty=Math.min(-Y0*s,Math.max(r.height-Y1*s,ty))}
 function apply(){sheetClamp();const l=s<fitS*2.2?0:s<0.5?1:2;if(l!==lod){lod=l;world.className='lod'+l;app.classList.toggle('zoomed',l>0)}req()}

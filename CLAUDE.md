@@ -37,7 +37,7 @@ sinon le fichier reste et est listé dans `inbox/A_VERIFIER.txt`. Si Javier dema
 Les pièces jointes du chat Claude arrivent sans EXIF (pas de GPS ni date) : identifier par l'enseigne.
 
 ## Règles de design (validées par Javier — ne pas changer sans demande)
-- Papier crème avec grain/fibres/taches **solidaires de la carte** (bougent et zooment avec elle) ; seul le léger vignettage est fixe à l'écran. La feuille ne montre jamais de bord (zoom/pan bornés).
+- Fond uni couleur papier, sans texture (ni fibres ni taches) : seulement un grain fin monochrome (taille constante, suit le déplacement), au-dessus du trait. La feuille ne montre jamais de bord (zoom/pan bornés).
 - Encre brun-noir chaud, trait avec grain ; l'eau en bleu-gris aquarelle, avec grain aussi.
 - Seuls les lieux photographiés ont une carte ; les autres = points d'encre très discrets, non cliquables.
 - Carte : papier blanc chaud, ombres en couches. Photos affichées telles quelles (aucun filtre, vignette ni grain). Ne pas écrire « polaroid » dans l'interface.
