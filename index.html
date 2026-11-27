@@ -121,14 +121,14 @@ function phStep(){phRaf=0;if(RM)return;const R=app.getBoundingClientRect(),cx=R.
   const dtx=pTx==null?0:tx-pTx,dty=ty-pTy,lz=pTx==null?0:Math.log(s/pS);pTx=tx;pTy=ty;pS=s;let e=0;
   for(const [id,c] of PH){const it=byId.get(id),sx=it.x*s+tx,sy=it.y*s+ty;
     if(sx<-200||sx>R.width+200||sy<-300||sy>R.height+200){c.ox=c.oy=c.or=c.vx=c.vy=c.vr=0;c.el.style.removeProperty('--dx');c.el.style.removeProperty('--dy');c.el.style.removeProperty('--dr');continue}
-    c.vr+=(-dtx*.045-dty*.012*c.sg)*c.m*c.f;
-    if(lz){const nx=(sx-cx)/R.width;c.vr+=lz*(nx*60+c.sg*14)*c.m}
-    const k=.075*c.f,d=.80;c.vx=(c.vx-c.ox*k)*d;c.vy=(c.vy-c.oy*k)*d;c.vr=(c.vr-c.or*k)*d;
-    c.ox=Math.max(-26,Math.min(26,c.ox+c.vx));c.oy=Math.max(-20,Math.min(20,c.oy+c.vy));c.or=Math.max(-9,Math.min(9,c.or+c.vr));
+    
+    if(lz){const nx=(sx-cx)/R.width;c.vr+=lz*(nx*26+c.sg*7)*c.m}
+    const k=.16*c.f,d=.58;c.vx=(c.vx-c.ox*k)*d;c.vy=(c.vy-c.oy*k)*d;c.vr=(c.vr-c.or*k)*d;
+    c.ox=Math.max(-26,Math.min(26,c.ox+c.vx));c.oy=Math.max(-20,Math.min(20,c.oy+c.vy));c.or=Math.max(-5,Math.min(5,c.or+c.vr));
     e+=Math.abs(c.ox)+Math.abs(c.oy)+Math.abs(c.or)+Math.abs(c.vx)+Math.abs(c.vy)+Math.abs(c.vr);
     c.el.style.setProperty('--dx',(c.ox/s).toFixed(3)+'px');c.el.style.setProperty('--dy',(c.oy/s).toFixed(3)+'px');c.el.style.setProperty('--dr',c.or.toFixed(3)+'deg')}
-  if(e>.05||dtx||dty||lz)phRaf=requestAnimationFrame(phStep)}
-const phKick=()=>{if(!phRaf&&!RM)phRaf=requestAnimationFrame(phStep)};
+  if(e>.03||lz)phRaf=requestAnimationFrame(phStep)}
+const phKick=()=>{if(s!==pS&&!phRaf&&!RM)phRaf=requestAnimationFrame(phStep)};
 const phOff=id=>{const c=PH.get(id);return c?{x:c.ox,y:c.oy,r:c.or}:{x:0,y:0,r:0}};
 phInit();
 

@@ -43,7 +43,7 @@ Les pièces jointes du chat Claude arrivent sans EXIF (pas de GPS ni date) : ide
 - Carte : papier blanc chaud, ombres en couches. Photos affichées telles quelles (aucun filtre, vignette ni grain). Ne pas écrire « polaroid » dans l'interface.
 - Coin supérieur droit plié **uniquement** si photo secrète. Clic sur le coin → rotation 3D, le dos montre la photo secrète, **sans légende**, coin plié côté gauche.
 - Clic sur une carte → zoom vers le centre, fond assombri en sépia (pas noir), transition douce ; clic sur la carte → retour exact à sa place.
-- Cartes « suspendues » à leur point : légère oscillation (ressort) au déplacement et éventail au zoom, puis retour au repos ; désactivé si prefers-reduced-motion.
+- Cartes : petit éventail (≤5°) uniquement au zoom, retour rapide sans oscillation ; rien au déplacement ; désactivé si prefers-reduced-motion.
 - Pas de boutons de contrôle visibles. Polices : Cormorant Garamond (tout), Syne (sous-titre, majuscules espacées).
 
 ## Développement
