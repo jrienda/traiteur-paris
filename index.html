@@ -151,6 +151,7 @@ function frame(){raf=0;phKick();const k=cardK();if(k!==lastK){lastK=k;world.styl
 function draw(){dirty=false;R0={tx,ty,s};base.style.transform='none';const TX=tx+M,TY=ty+M;paperSync(TX,TY);ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);
   ctx.setTransform(dpr*s,0,0,dpr*s,dpr*TX,dpr*TY);ctx.lineCap='round';ctx.lineJoin='round';
   const zf=Math.max(1,Math.pow(s/fitS,.16)),fa=Math.max(.55,1-Math.log2(Math.max(1,s/fitS))*.09);
+  if(gImg.complete&&gImg.naturalWidth){ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(gImg,GM.x*PX+OX,GM.y*PX+OY,GM.w*PX,GM.h*PX)}
   if(wImg.complete&&wImg.naturalWidth){ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(wImg,WM.x*PX+OX,WM.y*PX+OY,WM.w*PX,WM.h*PX)}
   if(paths){for(let c=2;c<4;c++){ctx.strokeStyle=`rgba(70,52,34,${(cls[c].a*fa*.08).toFixed(3)})`;ctx.lineWidth=cls[c].w*zf*3.2/s;ctx.stroke(paths[c])}for(let c=0;c<4;c++){ctx.strokeStyle=`rgba(38,30,23,${(cls[c].a*fa).toFixed(3)})`;ctx.lineWidth=cls[c].w*zf/s;ctx.stroke(paths[c])}}
   if(inkPat&&inkPat.setTransform){ctx.save();ctx.setTransform(1,0,0,1,0,0);const a=dpr*Math.min(1.4,Math.max(s*2,.35));inkPat.setTransform(new DOMMatrix([a,0,0,a,dpr*TX,dpr*TY]));ctx.globalCompositeOperation='destination-out';ctx.fillStyle=inkPat;ctx.fillRect(0,0,cv.width,cv.height);ctx.restore()}
@@ -168,7 +169,7 @@ function mkPaper(){try{
   const V=$('grain');V.style.backgroundImage=`url(${a.toDataURL()})`;PAPER_OK=true;
 }catch(e){}}
 mkPaper();
-const WM={"x": 4494, "y": 990, "w": 9828, "h": 8346};const wImg=new Image();wImg.onload=()=>{dirty=true;req()};wImg.src='water.png?v=2';
+const GM={"x": 3768, "y": 936, "w": 12042, "h": 9468};const gImg=new Image();gImg.onload=()=>{dirty=true;req()};gImg.src='green.png?v=1';const WM={"x": 4494, "y": 990, "w": 9828, "h": 8346};const wImg=new Image();wImg.onload=()=>{dirty=true;req()};wImg.src='water.png?v=2';
 let inkPat=null;(function(){try{const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d'),im=g.createImageData(256,256),d=im.data;
   for(let i=0;i<d.length;i+=4){const v=Math.random();d[i]=d[i+1]=d[i+2]=0;d[i+3]=v>.68?Math.round((v-.68)/.32*235):0}
   g.putImageData(im,0,0);g.fillStyle='#000';
