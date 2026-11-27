@@ -23,7 +23,11 @@ Javier envoie 1 ou 2 photos et dit « añade esto ».
    - Regarde toujours la photo : l'enseigne doit correspondre au nom trouvé.
    - Code de sortie 2 (ambigu / pas de GPS) ou enseigne différente → choisis avec l'enseigne et la liste des candidats,
      relance avec `--id N`. Si tu doutes encore, demande à Javier avant d'écrire.
-   - Traiteur absent de `places.json` → demande confirmation, ajoute-le (id = max+1, label du type `40b`, r aléatoire entre -2.6 et 2.6), puis relance.
+   - Traiteur absent de `places.json` → **le chercher sur Google Maps** (nom de l'enseigne + rue/numéro visibles), montrer à Javier
+     le résultat (nom, adresse, carte/lien) et lui demander de confirmer avec **deux boutons « Sí » / « No »** (AskUserQuestion)
+     AVANT d'écrire quoi que ce soit. Si « Sí » : l'ajouter (id = max+1, label du type `40b`, r aléatoire entre -2.6 et 2.6),
+     puis relancer add_photo.py. Si « No » : demander l'adresse.
+   - Après chaque ajout, marquer aussi le lieu comme visité dans l'app de tramos (artifact a7a27ec2-…, doc data/users/<id>/progreso, champ done).
 3. Vérifie `data/visits.json`, commit (`Ajoute <nom>`), push sur `main` → Vercel publie seul (~1 min).
 4. Réponds en une ligne : nom, adresse, date, avec ou sans photo secrète.
 Pas de GPS (photo partagée depuis iPhone sans localisation) : utilise l'enseigne, et rappelle-lui « Options → Inclure la localisation ».
