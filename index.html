@@ -20,7 +20,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var
 #cv{position:absolute;inset:0;width:100%;height:100%}
 #paper{position:absolute;inset:0;background-color:var(--paper)}
 #vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 120% 95% at 50% 45%,rgba(0,0,0,0) 55%,rgba(110,84,52,.10) 82%,rgba(90,66,40,.20));mix-blend-mode:multiply}
-#world{position:absolute;left:0;top:0;transform-origin:0 0}
+#world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
 .pol{position:absolute;width:112px;height:134px;margin:-67px 0 0 -56px;cursor:pointer;transition:opacity .4s;contain:layout;filter:drop-shadow(0 .5px .45px rgba(0,0,0,.26)) drop-shadow(.8px 2.6px 2.6px rgba(20,15,10,.20)) drop-shadow(2px 6px 7px rgba(20,15,10,.12));}
 
 
@@ -118,7 +118,7 @@ const cls=[{w:.35,a:.42},{w:.55,a:.55},{w:.85,a:.62},{w:1.05,a:.7}];
 fetch('streets.json').then(r=>r.json()).then(S=>{paths=[0,1,2,3].map(c=>{const p=new Path2D();for(const dl of S.c[c]||[]){let x=dl[0],y=dl[1];p.moveTo(x/10*PX+OX,y/10*PX+OY);for(let i=2;i<dl.length;i+=2){x+=dl[i];y+=dl[i+1];p.lineTo(x/10*PX+OX,y/10*PX+OY)}}return p});draw()}).catch(()=>{});
 let s=1,tx=0,ty=0,fitS=1,lod=-1,dpr=Math.min(2,window.devicePixelRatio||1),raf=0;
 function size(){const r=app.getBoundingClientRect();dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr)}
-function draw(){raf=0;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);
+function draw(){raf=0;paperSync();world.style.setProperty('--k',cardK());world.style.transform=`translate(${tx}px,${ty}px) scale(${s})`;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);
   ctx.setTransform(dpr*s,0,0,dpr*s,dpr*tx,dpr*ty);ctx.lineCap='round';ctx.lineJoin='round';
   const zf=Math.max(1,Math.pow(s/fitS,.16)),fa=Math.max(.55,1-Math.log2(Math.max(1,s/fitS))*.09);
   if(wImg.complete&&wImg.naturalWidth){ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(wImg,WM.x*PX+OX,WM.y*PX+OY,WM.w*PX,WM.h*PX)}
@@ -160,7 +160,7 @@ const req=()=>{if(!raf)raf=requestAnimationFrame(draw)};
 const paperEl=$('paper'),vigEl=$('vig');function paperSync(){if(!PAPER_OK)return;const k=s/.5,p=`${tx}px ${ty}px`;paperEl.style.backgroundSize=`${512*k}px ${512*k}px,${5*W*s}px ${5*H*s}px`;paperEl.style.backgroundPosition=`${p},${tx-2*W*s}px ${ty-2*H*s}px`;paperEl.style.backgroundRepeat='repeat,no-repeat';vigEl.style.backgroundSize=`auto,${512*k}px ${512*k}px`;vigEl.style.backgroundPosition=`0 0,${p}`}
 function sheetClamp(){const r=app.getBoundingClientRect();if(!r.width)return;const X0=-2*W,X1=3*W,Y0=-2*H,Y1=3*H;
   s=Math.max(s,r.width/(X1-X0),r.height/(Y1-Y0));tx=Math.min(r.width/2,Math.max(r.width/2-W*s,tx));ty=Math.min(r.height/2,Math.max(r.height/2-H*s,ty));tx=Math.min(-X0*s,Math.max(r.width-X1*s,tx));ty=Math.min(-Y0*s,Math.max(r.height-Y1*s,ty))}
-function apply(){sheetClamp();paperSync();world.style.setProperty('--k',cardK());world.style.transform=`translate(${tx}px,${ty}px) scale(${s})`;const l=s<fitS*2.2?0:s<0.5?1:2;if(l!==lod){lod=l;world.className='lod'+l;app.classList.toggle('zoomed',l>0)}req()}
+function apply(){sheetClamp();const l=s<fitS*2.2?0:s<0.5?1:2;if(l!==lod){lod=l;world.className='lod'+l;app.classList.toggle('zoomed',l>0)}req()}
 function fit(){const r=app.getBoundingClientRect();fitS=Math.min(r.width/W,r.height/H)*1.02;s=fitS;tx=(r.width-W*s)/2;ty=(r.height-H*s)/2;apply()}
 const clampS=v=>Math.max(fitS*.85,Math.min(2,v));
 let hinted=false;const hide=()=>{if(!hinted&&lod>0){hinted=true;$('hint').style.opacity=0}};
