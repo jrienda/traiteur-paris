@@ -10,7 +10,7 @@ Langue du site : français. Javier écrit en espagnol : réponds-lui en espagnol
 - `data/places.json` — 304 traiteurs : `id, label, name, address, arr, lat, lng, gmaps, r` (r = inclinaison de la carte en °)
   + `map` (projection : x=(lng-lng0)*mx*PX+ox, y=(lat0-lat)*my*PX+oy) + `demo` (ids pour `?demo`).
 - `data/visits.json` — visites : `{id, date, front, back?}`. C'est la seule source de « ce qui est photographié ».
-- `photos/<id>/front.webp` (+ `back.webp` = photo secrète) — 2400 px max, qualité 90, sans EXIF.
+- `photos/<id>/front.webp` (+ `back.webp` = photo secrète) — 2400 px max, qualité 90, sans EXIF ; `thumb.webp` (420 px) = version affichée sur la carte, générée par add_photo.py.
 - `streets.json` (rues dans le périphérique, delta-encodées, en décimètres) et `water.png` (Seine + canaux, données officielles « Plan de voirie – Voies d'eau »).
 - `scripts/add_photo.py` — ajoute une visite.
 

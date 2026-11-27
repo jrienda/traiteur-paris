@@ -17,8 +17,10 @@
 html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font:15px/1.5 "Cormorant Garamond",Georgia,serif;-webkit-font-smoothing:antialiased}
 #app{position:relative;width:100%;height:100dvh;overflow:hidden;touch-action:none;cursor:grab}
 #app.drag{cursor:grabbing}
-#cv{position:absolute;inset:0;width:100%;height:100%}
-#paper{position:absolute;inset:0;background-color:var(--paper)}
+#base{position:absolute;left:0;top:0;will-change:transform;pointer-events:none}
+#base>*{position:absolute;inset:0;width:100%;height:100%}
+#grain{mix-blend-mode:multiply;opacity:.45}
+#paper{background-color:var(--paper)}
 #vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 120% 95% at 50% 45%,rgba(0,0,0,0) 55%,rgba(110,84,52,.10) 82%,rgba(90,66,40,.20));mix-blend-mode:multiply}
 #world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
 .pol{position:absolute;width:112px;height:134px;margin:-67px 0 0 -56px;cursor:pointer;transition:opacity .4s;contain:layout;filter:drop-shadow(0 .5px .45px rgba(0,0,0,.26)) drop-shadow(.8px 2.6px 2.6px rgba(20,15,10,.20)) drop-shadow(2px 6px 7px rgba(20,15,10,.12));}
@@ -81,8 +83,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var
 </head>
 <body>
 <div id="app" aria-label="Les traiteurs chinois — plan de Paris au trait fin avec les photos des traiteurs. Glissez, pincez pour zoomer, touchez une photo.">
-<div id="paper"></div>
-<canvas id="cv"></canvas>
+<div id="base"><div id="paper"></div><canvas id="cv"></canvas><div id="grain"></div></div>
 <div id="vig"></div>
 <div id="world"></div>
 <div class="ui title"><h1>Les traiteurs chinois</h1><h2>nourrissant <b id="cnt">0</b> histoires</h2></div>
@@ -107,7 +108,7 @@ function shop(it){const r=rnd(it.id*13+7),pick=a=>a[Math.floor(r()*a.length)];
   const nm=esc(it.n.length>20?it.n.slice(0,19)+'…':it.n);let st='';for(let k=0;k<10;k++)st+=`<rect x="${k*20}" y="78" width="10" height="20" fill="${aw}" opacity=".9"/>`;
   return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="200" height="200" fill="#c9d1d3"/><rect y="24" width="200" height="176" fill="${wall}"/><rect y="50" width="200" height="28" fill="#2e2c2a"/><text x="100" y="69" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-style="italic" font-size="15" fill="#efe6d4">${nm}</text><rect y="78" width="200" height="20" fill="#f3efe7"/>${st}<rect x="16" y="106" width="114" height="78" fill="${win}"/><rect x="20" y="110" width="106" height="70" fill="#8c9a98" opacity=".6"/><rect x="20" y="150" width="106" height="30" fill="#c7a46b" opacity=".45"/><rect x="142" y="106" width="42" height="94" fill="#3b3631"/><rect x="0" y="186" width="200" height="14" fill="#9b968c"/></svg>`}
 const fmt=d=>d.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
-const photo=it=>{const d=dev.get(it.id);return !d?'':d.url?`<img src="${d.url}" alt="" loading="lazy" decoding="async">`:shop(it)};
+const photo=(it,full)=>{const d=dev.get(it.id);if(!d)return'';if(!d.url)return shop(it);const t=d.url.replace(/front\.webp$/,'thumb.webp');return full?`<img src="${d.url}" alt="" decoding="async" style="background:url(${t}) center/cover">`:`<img src="${t}" alt="" decoding="async">`};
 const D=I.filter(it=>dev.has(it.id)).sort((a,b)=>a.y-b.y);const GAP=14,MINS=.5;
 const cardK=()=>Math.max(1,MINS/s);
 const cc=(it,k=cardK())=>{const a=it.r*Math.PI/180;return {x:it.x+81*k*Math.sin(a),y:it.y-81*k*Math.cos(a)}};
@@ -138,13 +139,21 @@ let paths=null;
 const cls=[{w:.35,a:.42},{w:.55,a:.55},{w:.85,a:.62},{w:1.05,a:.7}];
 fetch('streets.json').then(r=>r.json()).then(S=>{paths=[0,1,2,3].map(c=>{const p=new Path2D();for(const dl of S.c[c]||[]){let x=dl[0],y=dl[1];p.moveTo(x/10*PX+OX,y/10*PX+OY);for(let i=2;i<dl.length;i+=2){x+=dl[i];y+=dl[i+1];p.lineTo(x/10*PX+OX,y/10*PX+OY)}}return p});draw()}).catch(()=>{});
 let s=1,tx=0,ty=0,fitS=1,lod=-1,dpr=Math.min(2,window.devicePixelRatio||1),raf=0;
-function size(){const r=app.getBoundingClientRect();dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr)}
-function draw(){raf=0;paperSync();phKick();world.style.setProperty('--k',cardK());world.style.transform=`translate(${tx}px,${ty}px) scale(${s})`;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);
-  ctx.setTransform(dpr*s,0,0,dpr*s,dpr*tx,dpr*ty);ctx.lineCap='round';ctx.lineJoin='round';
+let M=0,R0={tx:0,ty:0,s:1},rT=0;const base=$('base');
+function size(){const r=app.getBoundingClientRect();dpr=Math.min(2,window.devicePixelRatio||1);M=Math.round(Math.max(r.width,r.height)*.3);
+  base.style.left=base.style.top=-M+'px';base.style.width=r.width+2*M+'px';base.style.height=r.height+2*M+'px';base.style.transformOrigin=`${M}px ${M}px`;
+  cv.width=Math.round((r.width+2*M)*dpr);cv.height=Math.round((r.height+2*M)*dpr)}
+let lastK=-1,dirty=true;
+function frame(){raf=0;phKick();const k=cardK();if(k!==lastK){lastK=k;world.style.setProperty('--k',k)}world.style.transform=`translate(${tx}px,${ty}px) scale(${s})`;
+  const q=s/R0.s,dx=tx-R0.tx*q,dy=ty-R0.ty*q;base.style.transform=`translate(${dx}px,${dy}px) scale(${q})`;
+  const r=app.getBoundingClientRect(),cov=-M*q+dx<=0&&(r.width+M)*q+dx>=r.width&&-M*q+dy<=0&&(r.height+M)*q+dy>=r.height;
+  clearTimeout(rT);if(dirty||!cov||q<.6||q>1.7){draw()}else rT=setTimeout(draw,120)}
+function draw(){dirty=false;R0={tx,ty,s};base.style.transform='none';const TX=tx+M,TY=ty+M;paperSync(TX,TY);ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.setTransform(dpr*s,0,0,dpr*s,dpr*TX,dpr*TY);ctx.lineCap='round';ctx.lineJoin='round';
   const zf=Math.max(1,Math.pow(s/fitS,.16)),fa=Math.max(.55,1-Math.log2(Math.max(1,s/fitS))*.09);
   if(wImg.complete&&wImg.naturalWidth){ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(wImg,WM.x*PX+OX,WM.y*PX+OY,WM.w*PX,WM.h*PX)}
   if(paths){for(let c=2;c<4;c++){ctx.strokeStyle=`rgba(70,52,34,${(cls[c].a*fa*.08).toFixed(3)})`;ctx.lineWidth=cls[c].w*zf*3.2/s;ctx.stroke(paths[c])}for(let c=0;c<4;c++){ctx.strokeStyle=`rgba(38,30,23,${(cls[c].a*fa).toFixed(3)})`;ctx.lineWidth=cls[c].w*zf/s;ctx.stroke(paths[c])}}
-  if(inkPat&&inkPat.setTransform){ctx.save();ctx.setTransform(1,0,0,1,0,0);const a=dpr*Math.min(1.4,Math.max(s*2,.35));inkPat.setTransform(new DOMMatrix([a,0,0,a,dpr*tx,dpr*ty]));ctx.globalCompositeOperation='destination-out';ctx.fillStyle=inkPat;ctx.fillRect(0,0,cv.width,cv.height);ctx.restore()}
+  if(inkPat&&inkPat.setTransform){ctx.save();ctx.setTransform(1,0,0,1,0,0);const a=dpr*Math.min(1.4,Math.max(s*2,.35));inkPat.setTransform(new DOMMatrix([a,0,0,a,dpr*TX,dpr*TY]));ctx.globalCompositeOperation='destination-out';ctx.fillStyle=inkPat;ctx.fillRect(0,0,cv.width,cv.height);ctx.restore()}
   {const k=cardK(),dr=1.25/s;ctx.fillStyle='rgba(38,30,23,.30)';ctx.beginPath();for(const it of I){if(dev.has(it.id))continue;ctx.moveTo(it.x+dr,it.y);ctx.arc(it.x,it.y,dr,0,6.283)}ctx.fill();
   
   ctx.fillStyle='#a8473b';for(const it of D){ctx.beginPath();ctx.arc(it.x,it.y,2.4/s,0,6.283);ctx.fill()}}}
@@ -168,17 +177,17 @@ function mkPaper(){try{
   for(let k=0;k<380;k++)blot(R(0,BW),R(0,BH),R(80,320),`rgba(150,118,78,${R(.012,.032)})`);
   for(let k=0;k<260;k++)blot(R(0,BW),R(0,BH),R(60,260),`rgba(255,252,244,${R(.05,.12)})`);
   for(let k=0;k<300;k++)blot(R(0,BW),R(0,BH),R(1,3.2),`rgba(140,98,52,${R(.10,.24)})`);
-  const P=$('paper');P.style.backgroundImage=`url(${a.toDataURL()}),url(${b.toDataURL()})`;const V=$('vig');V.style.backgroundImage=`radial-gradient(ellipse 120% 95% at 50% 45%,rgba(0,0,0,0) 55%,rgba(110,84,52,.10) 82%,rgba(90,66,40,.20)),url(${a.toDataURL()})`;PAPER_OK=true;V.style.opacity='.45';
+  const P=$('paper');P.style.backgroundImage=`url(${a.toDataURL()}),url(${b.toDataURL()})`;const V=$('grain');V.style.backgroundImage=`url(${a.toDataURL()})`;PAPER_OK=true;
 }catch(e){}}
 mkPaper();
-const WM={"x": 4494, "y": 990, "w": 9828, "h": 8346};const wImg=new Image();wImg.onload=()=>req();wImg.src='water.png?v=2';
+const WM={"x": 4494, "y": 990, "w": 9828, "h": 8346};const wImg=new Image();wImg.onload=()=>{dirty=true;req()};wImg.src='water.png?v=2';
 let inkPat=null;(function(){try{const c=document.createElement('canvas');c.width=c.height=256;const g=c.getContext('2d'),im=g.createImageData(256,256),d=im.data;
   for(let i=0;i<d.length;i+=4){const v=Math.random();d[i]=d[i+1]=d[i+2]=0;d[i+3]=v>.68?Math.round((v-.68)/.32*235):0}
   g.putImageData(im,0,0);g.fillStyle='#000';
   for(let k=0;k<90;k++){const x=Math.random()*256,y=Math.random()*256,r=.6+Math.random()*1.6;g.globalAlpha=.35+Math.random()*.5;for(const ox of [-256,0,256])for(const oy of [-256,0,256]){g.beginPath();g.arc(x+ox,y+oy,r,0,7);g.fill()}}
   inkPat=ctx.createPattern(c,'repeat')}catch(e){}})();
-const req=()=>{if(!raf)raf=requestAnimationFrame(draw)};
-const paperEl=$('paper'),vigEl=$('vig');function paperSync(){if(!PAPER_OK)return;const k=s/.5,p=`${tx}px ${ty}px`;paperEl.style.backgroundSize=`${512*k}px ${512*k}px,${5*W*s}px ${5*H*s}px`;paperEl.style.backgroundPosition=`${p},${tx-2*W*s}px ${ty-2*H*s}px`;paperEl.style.backgroundRepeat='repeat,no-repeat';vigEl.style.backgroundSize=`auto,${512*k}px ${512*k}px`;vigEl.style.backgroundPosition=`0 0,${p}`}
+const req=()=>{if(!raf)raf=requestAnimationFrame(frame)};
+const paperEl=$('paper'),vigEl=$('grain');function paperSync(X,Y){if(!PAPER_OK)return;const k=s/.5,p=`${X}px ${Y}px`;paperEl.style.backgroundSize=`${512*k}px ${512*k}px,${5*W*s}px ${5*H*s}px`;paperEl.style.backgroundPosition=`${p},${X-2*W*s}px ${Y-2*H*s}px`;paperEl.style.backgroundRepeat='repeat,no-repeat';vigEl.style.backgroundSize=`${512*k}px ${512*k}px`;vigEl.style.backgroundPosition=p}
 function sheetClamp(){const r=app.getBoundingClientRect();if(!r.width)return;const X0=-2*W,X1=3*W,Y0=-2*H,Y1=3*H;
   s=Math.max(s,r.width/(X1-X0),r.height/(Y1-Y0));tx=Math.min(r.width/2,Math.max(r.width/2-W*s,tx));ty=Math.min(r.height/2,Math.max(r.height/2-H*s,ty));tx=Math.min(-X0*s,Math.max(r.width-X1*s,tx));ty=Math.min(-Y0*s,Math.max(r.height-Y1*s,ty))}
 function apply(){sheetClamp();const l=s<fitS*2.2?0:s<0.5?1:2;if(l!==lod){lod=l;world.className='lod'+l;app.classList.toggle('zoomed',l>0)}req()}
@@ -217,7 +226,7 @@ function endT(){const r=app.getBoundingClientRect();const k=endK();return `trans
 function open(id){if(busy||F)return;const it=byId.get(id),d=dev.get(id),src=document.querySelector(`.pol[data-id="${id}"]`);if(!src)return;busy=true;
   const fc=document.createElement('div');const two=!!(d&&(d.back||d.demo));fc.className='fc'+(two?' two':'');fc.setAttribute('role','dialog');fc.setAttribute('aria-label',it.n);
   FK=endK();fc.style.width=112*FK+'px';fc.style.height=134*FK+'px';fc.style.transformOrigin=`${56*FK}px ${67*FK}px`;
-  fc.innerHTML=`<div class="zm" style="zoom:${FK}"><div class="fl">${sideHTML('front',photo(it),esc(it.n),capCls(it.n),'Retourner la photo')}${two?sideHTML('back',back(it),'','','Revenir à la photo principale'):''}</div></div>`;
+  fc.innerHTML=`<div class="zm" style="zoom:${FK}"><div class="fl">${sideHTML('front',photo(it,1),esc(it.n),capCls(it.n),'Retourner la photo')}${two?sideHTML('back',back(it),'','','Revenir à la photo principale'):''}</div></div>`;
   fc.style.transform=startT(it);$('focus').appendChild(fc);src.style.visibility='hidden';
   F={id,fc,src,it};app.classList.add('focused');
   requestAnimationFrame(()=>{fc.classList.add('up');scrim.classList.remove('out');scrim.classList.add('on');const a=fc.animate([{transform:startT(it)},{transform:endT()}],{duration:620,easing:'cubic-bezier(.2,.75,.15,1)',fill:'forwards'});a.onfinish=()=>{fc.style.transform=endT();a.cancel();busy=false;fc.querySelector('.front .corner').focus({preventScroll:true})}});
@@ -228,7 +237,7 @@ function closeF(){if(!F||busy)return;busy=true;const {fc,src,it}=F;fc.classList.
   a.onfinish=()=>{src.style.visibility='';fc.remove();F=null;busy=false;app.classList.remove('focused')}}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeF()});
 window.addEventListener('resize',()=>{if(F&&!busy){F.fc.style.transform=endT()}});
-window.addEventListener('resize',()=>{size();const r=app.getBoundingClientRect(),old=fitS;fitS=Math.min(r.width/W,r.height/H)*1.02;if(s<=old*1.01)fit();else req()});
+window.addEventListener('resize',()=>{size();dirty=true;const r=app.getBoundingClientRect(),old=fitS;fitS=Math.min(r.width/W,r.height/H)*1.02;if(s<=old*1.01)fit();else req()});
 size();fit();
 {const r=app.getBoundingClientRect();if(r.height>r.width*1.2){const ns=Math.min(fitS*2.05,r.height/H*.95);s=ns;tx=r.width/2-W/2*s;ty=r.height/2-H*.48*s;apply()}}
 })()</script>

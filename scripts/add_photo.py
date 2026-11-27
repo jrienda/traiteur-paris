@@ -77,6 +77,13 @@ def save_webp(src, dst):
     return img.size
 
 
+def save_thumb(front):
+    """Small copy used on the map (cards are ~112 css px); the full image loads only when a card is opened."""
+    img = Image.open(front).convert("RGB")
+    img.thumbnail((420, 420), Image.LANCZOS)
+    img.save(front.replace("front.webp", "thumb.webp"), "WEBP", quality=80, method=6)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("photos", nargs="+", help="FRONT [BACK]")
@@ -125,6 +132,7 @@ def main():
            "gps_m": round(cands[0][0]) if cands else None, "dry_run": a.dry_run}
     if not a.dry_run:
         save_webp(a.photos[0], os.path.join(ROOT, res["front"]))
+        save_thumb(os.path.join(ROOT, res["front"]))
         backf = os.path.join(ROOT, rel("back"))
         if len(a.photos) == 2:
             save_webp(a.photos[1], backf)
