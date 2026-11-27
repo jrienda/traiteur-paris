@@ -3381,6 +3381,28 @@
    "lng": 2.3557207,
    "gmaps": "https://www.google.com/maps/search/?api=1&query=Coin%20de%20Paradis%2C%2037%20Rue%20au%20Maire%2C%2075003%20Paris&query_place_id=ChIJ009qyBpu5kcRsFXONSfnL44",
    "r": 1.24
+  },
+  {
+   "id": 307,
+   "label": "9b",
+   "name": "Bonne Chance",
+   "address": "10 Rue Notre-Dame-de-Nazareth, 75003 Paris",
+   "arr": "3e",
+   "lat": 48.8671466,
+   "lng": 2.3614173,
+   "gmaps": "https://www.google.com/maps/search/?api=1&query=Bonne%20Chance%2C%2010%20Rue%20Notre-Dame-de-Nazareth%2C%2075003%20Paris&query_place_id=ChIJf9XQN7Vv5kcRPZyr6DbjtsQ",
+   "r": -2.39
+  },
+  {
+   "id": 308,
+   "label": "12c",
+   "name": "Mei Wei Xiang",
+   "address": "28 Rue au Maire, 75003 Paris",
+   "arr": "3e",
+   "lat": 48.8647553,
+   "lng": 2.3558199,
+   "gmaps": "https://www.google.com/maps/search/?api=1&query=Mei%20Wei%20Xiang%2C%2028%20Rue%20au%20Maire%2C%2075003%20Paris&query_place_id=ChIJo9POtxpu5kcROi96lYyXiLI",
+   "r": -1.96
   }
  ]
 }
