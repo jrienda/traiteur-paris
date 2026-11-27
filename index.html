@@ -43,8 +43,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var
 .pol .ph.dv:after,.fc .ph.dv:after{background:none;opacity:1;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.18)}
 .pol .ph.dv:before,.fc .ph.dv:before{display:none}
 .pol .ph svg,.pol .ph img,.fc .ph svg,.fc .ph img{display:block;width:100%;height:100%;object-fit:cover}
-.pol .cap,.fc .cap{position:relative;height:28px;display:flex;align-items:center;justify-content:center;font:italic 500 15px/1 "Cormorant Garamond",Georgia,serif;color:#3a3733;text-align:center;overflow:hidden;padding:0 1px}
-.pol .cap.m,.fc .cap.m{font-size:13px}.pol .cap.l,.fc .cap.l{font-size:12px;line-height:.98}
+.pol .cap,.fc .cap{position:relative;height:28px;display:flex;align-items:center;justify-content:center;font:500 9px/1 "Cormorant Garamond",Georgia,serif;text-transform:uppercase;letter-spacing:.09em;white-space:nowrap;color:#3a3733;text-align:center;overflow:hidden;padding:0 2px}
+.pol .cap.m,.fc .cap.m{font-size:8px;letter-spacing:.06em}.pol .cap.l,.fc .cap.l{font-size:7px;letter-spacing:.03em}
 #world .pol:before{content:"";position:absolute;left:55.6px;top:134px;width:.8px;height:14px;background:rgba(38,30,23,.55)}
 #world .pol{margin:0!important;transform-origin:56px 148px;transform:translate(var(--dx,0px),var(--dy,0px)) rotate(calc(var(--r) + var(--dr,0deg))) scale(var(--k,1))}
 .ui{position:absolute;z-index:10}
@@ -113,6 +113,8 @@ const D=I.filter(it=>dev.has(it.id)).sort((a,b)=>a.y-b.y);const GAP=14,MINS=.5;
 const cardK=()=>Math.max(1,MINS/s);
 const cc=(it,k=cardK())=>{const a=it.r*Math.PI/180;return {x:it.x+81*k*Math.sin(a),y:it.y-81*k*Math.cos(a)}};
 $('world').innerHTML=D.map(it=>`<div class="pol${(dev.get(it.id).back||dev.get(it.id).demo)?' two':''}" data-id="${it.id}" style="left:${it.x-56}px;top:${it.y-134-GAP}px;--r:${it.r}deg"><div class="face"><div class="ph dv">${photo(it)}</div><div class="cap${capCls(it.n)}">${esc(it.n)}</div></div><span class="ear"></span></div>`).join('');
+function fitCaps(r){r.querySelectorAll('.cap').forEach(e=>{e.style.fontSize='';let f=parseFloat(getComputedStyle(e).fontSize);while(e.scrollWidth>e.clientWidth+.5&&f>5){f-=.25;e.style.fontSize=f+'px'}})}
+fitCaps($('world'));document.fonts&&document.fonts.ready.then(()=>fitCaps($('world')));
 
 /* --- loose cards: each card hangs on its pin and reacts a little to pan/zoom (spring) --- */
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -207,7 +209,7 @@ $('zrand').onclick=()=>{const it=I[Math.floor(Math.random()*I.length)];goTo(it,.
 let F=null,busy=false;const scrim=document.getElementById('scrim');
 function back(it){const d=dev.get(it.id);if(!d)return'';if(d.back)return `<img src="${d.back}" alt="" decoding="async">`;if(!d.demo)return'';const r=rnd(it.id*31+11),pick=a=>a[Math.floor(r()*a.length)];const bowl=pick(['#c9a46a','#b7553f','#d8c28e','#7f9a6b']),tray=pick(['#2f2b28','#3b4a52','#4a3a30']);
   return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="200" height="200" fill="#d8d2c6"/><rect x="18" y="30" width="164" height="140" rx="6" fill="${tray}"/><circle cx="66" cy="78" r="30" fill="#f3efe6"/><circle cx="66" cy="78" r="22" fill="${bowl}"/><circle cx="134" cy="78" r="30" fill="#f3efe6"/><circle cx="134" cy="78" r="22" fill="#e8d9a8"/><circle cx="66" cy="132" r="26" fill="#f3efe6"/><circle cx="66" cy="132" r="18" fill="#8a9a5b"/><circle cx="134" cy="132" r="26" fill="#f3efe6"/><circle cx="134" cy="132" r="18" fill="#c27a4a"/><rect x="160" y="40" width="5" height="120" rx="2" fill="#c8a978" transform="rotate(8 162 100)"/><rect x="170" y="40" width="5" height="120" rx="2" fill="#c8a978" transform="rotate(8 172 100)"/></svg>`}
-function capCls(n){return n.length>21?' l':n.length>15?' m':''}
+function capCls(n){return n.length>20?' l':n.length>15?' m':''}
 function sideHTML(cls,ph,cap,capc,lbl){return `<div class="side ${cls}"><div class="face"><div class="ph${ph?' dv':''}">${ph}</div><div class="cap${capc}">${cap}</div></div><span class="ear"></span><button class="corner" aria-label="${lbl}"></button></div>`}
 let FK=1;const endK=()=>{const r=app.getBoundingClientRect();return Math.min(r.width*.74/112,r.height*.66/134,3.6)};
 function startT(it){const k=cardK(),c=cc(it,k),o=phOff(it.id);return `translate(${c.x*s+tx-56*FK+o.x}px,${c.y*s+ty-67*FK+o.y}px) rotate(${it.r+o.r}deg) scale(${s*k/FK})`}
@@ -215,7 +217,7 @@ function endT(){const r=app.getBoundingClientRect();const k=endK();return `trans
 function open(id){if(busy||F)return;const it=byId.get(id),d=dev.get(id),src=document.querySelector(`.pol[data-id="${id}"]`);if(!src)return;busy=true;
   const fc=document.createElement('div');const two=!!(d&&(d.back||d.demo));fc.className='fc'+(two?' two':'');fc.setAttribute('role','dialog');fc.setAttribute('aria-label',it.n);
   FK=endK();fc.style.width=112*FK+'px';fc.style.height=134*FK+'px';fc.style.transformOrigin=`${56*FK}px ${67*FK}px`;
-  fc.innerHTML=`<div class="zm" style="zoom:${FK}"><div class="fl">${sideHTML('front',photo(it,1),esc(it.n),capCls(it.n),'Retourner la photo')}${two?sideHTML('back',back(it),'','','Revenir à la photo principale'):''}</div></div>`;
+  fc.innerHTML=`<div class="zm" style="zoom:${FK}"><div class="fl">${sideHTML('front',photo(it,1),esc(it.n),capCls(it.n),'Retourner la photo')}${two?sideHTML('back',back(it),'','','Revenir à la photo principale'):''}</div></div>`;fitCaps(fc);
   fc.style.transform=startT(it);$('focus').appendChild(fc);src.style.visibility='hidden';
   F={id,fc,src,it};app.classList.add('focused');
   requestAnimationFrame(()=>{fc.classList.add('up');scrim.classList.remove('out');scrim.classList.add('on');const a=fc.animate([{transform:startT(it)},{transform:endT()}],{duration:620,easing:'cubic-bezier(.2,.75,.15,1)',fill:'forwards'});a.onfinish=()=>{fc.style.transform=endT();a.cancel();busy=false;fc.querySelector('.front .corner').focus({preventScroll:true})}});
