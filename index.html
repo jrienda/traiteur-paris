@@ -47,7 +47,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var
 .pol .cap,.fc .cap{position:relative;height:28px;display:flex;align-items:center;justify-content:center;font:500 9px/1 "Cormorant Garamond",Georgia,serif;text-transform:uppercase;letter-spacing:.09em;white-space:nowrap;color:#3a3733;text-align:center;overflow:hidden;padding:0 2px}
 .pol .cap.m,.fc .cap.m{font-size:8px;letter-spacing:.06em}.pol .cap.l,.fc .cap.l{font-size:7px;letter-spacing:.03em}
 #world .pol:before{content:"";position:absolute;left:55.6px;top:134px;width:.8px;height:14px;background:rgba(38,30,23,.55)}
-#world .pol{margin:0!important;transform-origin:56px 148px;transform:translate(var(--dx,0px),var(--dy,0px)) rotate(calc(var(--r) + var(--dr,0deg))) scale(var(--k,1))}
+#world .pol{margin:0!important;transform-origin:56px 148px;translate:var(--sx,0px) var(--sy,0px);transition:opacity .4s,translate .45s cubic-bezier(.25,.8,.25,1);transform:translate(var(--dx,0px),var(--dy,0px)) rotate(calc(var(--r) + var(--dr,0deg))) scale(var(--k,1))}
 .ui{position:absolute;z-index:10}
 .title{left:max(18px,3vw);bottom:max(18px,3vh);pointer-events:none;transition:opacity .5s}
 #app.zoomed .title{opacity:0}
@@ -113,6 +113,20 @@ const fmt=d=>d.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'nume
 const photo=(it,full)=>{const d=dev.get(it.id);if(!d)return'';if(!d.url)return shop(it);const t=d.url.replace(/front\.webp$/,'thumb.webp');return full?`<img src="${d.url}" alt="" decoding="async" style="background:url(${t}) center/cover">`:`<img src="${t}" alt="" decoding="async">`};
 const D=I.filter(it=>dev.has(it.id)).sort((a,b)=>a.y-b.y);const GAP=14,MINS=.5;
 const cardK=()=>Math.max(1,MINS/s);
+/* de-cluster: when zoomed in, push overlapping cards apart (≤ ~30% overlap allowed), each tied to its pin by an ink line */
+const SP=new Map();
+function spread(){const on=s>fitS*2.2,k=cardK(),r=app.getBoundingClientRect();
+  const vx0=(-tx)/s-300*k,vy0=(-ty)/s-300*k,vx1=(r.width-tx)/s+300*k,vy1=(r.height-ty)/s+300*k;
+  const A=on?D.filter(it=>it.x>vx0&&it.x<vx1&&it.y>vy0&&it.y<vy1):[];const P=A.map(it=>({it,x:0,y:0}));
+  const mw=112*k*.7,mh=134*k*.7,lim=150*k;
+  for(let n=0;n<90;n++){for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const a=P[i],b=P[j];
+      let dx=(b.it.x+b.x)-(a.it.x+a.x),dy=(b.it.y+b.y)-(a.it.y+a.y);const px=mw-Math.abs(dx),py=mh-Math.abs(dy);if(px<=0||py<=0)continue;
+      if(px<py){const m=px/2*(dx<0?-1:dx>0?1:(a.it.id<b.it.id?1:-1));a.x-=m;b.x+=m}else{const m=py/2*(dy<0?-1:dy>0?1:(a.it.id<b.it.id?1:-1));a.y-=m;b.y+=m}}
+    for(const q of P){q.x*=.97;q.y*=.97;const d=Math.hypot(q.x,q.y);if(d>lim){q.x*=lim/d;q.y*=lim/d}}}
+  const keep=new Set();for(const q of P){if(Math.hypot(q.x,q.y)<.5)continue;keep.add(q.it.id);SP.set(q.it.id,{x:q.x,y:q.y})}
+  for(const id of [...SP.keys()])if(!keep.has(id))SP.delete(id);
+  document.querySelectorAll('#world .pol').forEach(el=>{const o=SP.get(+el.dataset.id);el.style.setProperty('--sx',(o?o.x:0).toFixed(1)+'px');el.style.setProperty('--sy',(o?o.y:0).toFixed(1)+'px')})}
+const spOff=id=>SP.get(id)||{x:0,y:0};
 const cc=(it,k=cardK())=>{const a=it.r*Math.PI/180;return {x:it.x+81*k*Math.sin(a),y:it.y-81*k*Math.cos(a)}};
 $('world').innerHTML=D.map(it=>`<div class="pol${(dev.get(it.id).back||dev.get(it.id).demo)?' two':''}" data-id="${it.id}" style="left:${it.x-56}px;top:${it.y-134-GAP}px;--r:${it.r}deg"><div class="face"><div class="ph dv">${photo(it)}</div><div class="cap${capCls(it.n)}">${esc(it.n)}</div></div><span class="ear"></span></div>`).join('');
 function fitCaps(r){r.querySelectorAll('.cap').forEach(e=>{e.style.fontSize='';let f=parseFloat(getComputedStyle(e).fontSize);while(e.scrollWidth>e.clientWidth+.5&&f>5){f-=.25;e.style.fontSize=f+'px'}})}
@@ -161,6 +175,7 @@ function draw(){dirty=false;R0={tx,ty,s};base.style.transform='none';const TX=tx
   if(inkPat&&inkPat.setTransform){ctx.save();ctx.setTransform(1,0,0,1,0,0);const a=dpr*Math.min(1.4,Math.max(s*2,.35));inkPat.setTransform(new DOMMatrix([a,0,0,a,dpr*TX,dpr*TY]));ctx.globalCompositeOperation='destination-out';ctx.fillStyle=inkPat;ctx.fillRect(0,0,cv.width,cv.height);ctx.restore()}
   {const k=cardK(),dr=1.25/s;ctx.fillStyle='rgba(38,30,23,.30)';ctx.beginPath();for(const it of I){if(dev.has(it.id))continue;ctx.moveTo(it.x+dr,it.y);ctx.arc(it.x,it.y,dr,0,6.283)}ctx.fill();
   
+  spread();if(SP.size){ctx.strokeStyle='rgba(38,30,23,.55)';ctx.lineWidth=.8/s;ctx.beginPath();for(const it of D){const o=SP.get(it.id);if(!o)continue;ctx.moveTo(it.x,it.y);ctx.lineTo(it.x+o.x,it.y+o.y)}ctx.stroke()}
   ctx.fillStyle='#a8473b';for(const it of D){ctx.beginPath();ctx.arc(it.x,it.y,2.4/s,0,6.283);ctx.fill()}}}
 
 let PAPER_OK=false;
@@ -214,7 +229,7 @@ function back(it){const d=dev.get(it.id);if(!d)return'';if(d.back)return `<img s
 function capCls(n){return n.length>20?' l':n.length>15?' m':''}
 function sideHTML(cls,ph,cap,capc,lbl){return `<div class="side ${cls}"><div class="face"><div class="ph${ph?' dv':''}">${ph}</div><div class="cap${capc}">${cap}</div></div><span class="ear"></span><button class="corner" aria-label="${lbl}"></button></div>`}
 let FK=1;const endK=()=>{const r=app.getBoundingClientRect();return Math.min(r.width*.74/112,r.height*.66/134,3.6)};
-function startT(it){const k=cardK(),c=cc(it,k),o=phOff(it.id);return `translate(${c.x*s+tx-56*FK+o.x}px,${c.y*s+ty-67*FK+o.y}px) rotate(${it.r+o.r}deg) scale(${s*k/FK})`}
+function startT(it){const k=cardK(),c=cc(it,k),o=phOff(it.id),q=spOff(it.id);return `translate(${(c.x+q.x)*s+tx-56*FK+o.x}px,${(c.y+q.y)*s+ty-67*FK+o.y}px) rotate(${it.r+o.r}deg) scale(${s*k/FK})`}
 function endT(){const r=app.getBoundingClientRect();const k=endK();return `translate(${r.width/2-56*FK}px,${r.height/2-67*FK-r.height*.02}px) rotate(-1.4deg) scale(${k/FK})`}
 function open(id){if(busy||F)return;const it=byId.get(id),d=dev.get(id),src=document.querySelector(`.pol[data-id="${id}"]`);if(!src)return;busy=true;
   const fc=document.createElement('div');const two=!!(d&&(d.back||d.demo));fc.className='fc'+(two?' two':'');fc.setAttribute('role','dialog');fc.setAttribute('aria-label',it.n);

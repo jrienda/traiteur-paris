@@ -49,6 +49,7 @@ Les pièces jointes du chat Claude arrivent sans EXIF (pas de GPS ni date) : ide
 - Clic sur une carte → zoom vers le centre, fond assombri en sépia (pas noir), transition douce ; clic sur la carte → retour exact à sa place.
 - Cartes : petit éventail (≤5°) uniquement au zoom, retour rapide sans oscillation ; rien au déplacement ; désactivé si prefers-reduced-motion.
 - Légendes : MAJUSCULES espacées, petites, toujours sur une seule ligne (fitCaps réduit la taille si besoin).
+- Zoom avant (s > fitS×2,2) : les cartes trop proches s'écartent (≤ ~30 % de chevauchement), reliées à leur point par un trait d'encre ; vue générale : pas d'écartement.
 - Pas de boutons de contrôle visibles. Polices : Cormorant Garamond (tout), Syne (sous-titre, majuscules espacées).
 
 ## Développement
