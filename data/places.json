@@ -3359,6 +3359,28 @@
    "lng": 2.350161,
    "gmaps": "https://www.google.com/maps/search/?api=1&query=Yumie-Yumie%2C%2010%20Rue%20de%20la%20Tacherie%2C%2075004%20Paris&query_place_id=ChIJ_ZEm4Jhv5kcRjZw9xTBrqL0",
    "r": -1.29
+  },
+  {
+   "id": 305,
+   "label": "27b",
+   "name": "Harmonie",
+   "address": "174 Rue du Faubourg Saint-Antoine, 75012 Paris",
+   "arr": "12e",
+   "lat": 48.8502187,
+   "lng": 2.3822707,
+   "gmaps": "https://www.google.com/maps/search/?api=1&query=Harmonie%2C%20174%20Rue%20du%20Faubourg%20Saint-Antoine%2C%2075012%20Paris&query_place_id=ChIJ8dlLbuFz5kcR1udPICghngw",
+   "r": -0.71
+  },
+  {
+   "id": 306,
+   "label": "12b",
+   "name": "Coin de Paradis",
+   "address": "37 Rue au Maire, 75003 Paris",
+   "arr": "3e",
+   "lat": 48.8646702,
+   "lng": 2.3557207,
+   "gmaps": "https://www.google.com/maps/search/?api=1&query=Coin%20de%20Paradis%2C%2037%20Rue%20au%20Maire%2C%2075003%20Paris&query_place_id=ChIJ009qyBpu5kcRsFXONSfnL44",
+   "r": 1.24
   }
  ]
 }
