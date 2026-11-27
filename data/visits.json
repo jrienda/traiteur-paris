@@ -12,14 +12,74 @@
    "front": "photos/71/front.webp"
   },
   {
+   "id": 14,
+   "date": "2026-11-27",
+   "front": "photos/14/front.webp",
+   "back": "photos/14/back.webp"
+  },
+  {
+   "id": 15,
+   "date": "2026-11-27",
+   "front": "photos/15/front.webp"
+  },
+  {
+   "id": 16,
+   "date": "2026-11-27",
+   "front": "photos/16/front.webp"
+  },
+  {
    "id": 18,
    "date": "2026-11-27",
-   "front": "photos/18/front.webp"
+   "front": "photos/18/front.webp",
+   "back": "photos/18/back.webp"
   },
   {
    "id": 19,
    "date": "2026-11-27",
-   "front": "photos/19/front.webp"
+   "front": "photos/19/front.webp",
+   "back": "photos/19/back.webp"
+  },
+  {
+   "id": 21,
+   "date": "2026-11-27",
+   "front": "photos/21/front.webp"
+  },
+  {
+   "id": 22,
+   "date": "2026-11-27",
+   "front": "photos/22/front.webp",
+   "back": "photos/22/back.webp"
+  },
+  {
+   "id": 23,
+   "date": "2026-11-27",
+   "front": "photos/23/front.webp"
+  },
+  {
+   "id": 24,
+   "date": "2026-11-27",
+   "front": "photos/24/front.webp"
+  },
+  {
+   "id": 25,
+   "date": "2026-11-27",
+   "front": "photos/25/front.webp"
+  },
+  {
+   "id": 26,
+   "date": "2026-11-27",
+   "front": "photos/26/front.webp",
+   "back": "photos/26/back.webp"
+  },
+  {
+   "id": 28,
+   "date": "2026-11-27",
+   "front": "photos/28/front.webp"
+  },
+  {
+   "id": 29,
+   "date": "2026-11-27",
+   "front": "photos/29/front.webp"
   },
   {
    "id": 46,
