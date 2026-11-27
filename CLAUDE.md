@@ -7,7 +7,7 @@ Langue du site : français. Javier écrit en espagnol : réponds-lui en espagnol
 
 ## Structure
 - `index.html` — tout le site (HTML + CSS + JS, aucun build). Charge les données ci-dessous.
-- `data/places.json` — 304 traiteurs : `id, label, name, address, arr, lat, lng, gmaps, r` (r = inclinaison de la carte en °)
+- `data/places.json` — 303 traiteurs : `id, label, name, address, arr, lat, lng, gmaps, r` (r = inclinaison de la carte en °)
   + `map` (projection : x=(lng-lng0)*mx*PX+ox, y=(lat0-lat)*my*PX+oy) + `demo` (ids pour `?demo`).
 - `data/visits.json` — visites : `{id, date, front, back?}`. C'est la seule source de « ce qui est photographié ».
 - `photos/<id>/front.webp` (+ `back.webp` = photo secrète) — 2400 px max, qualité 90, sans EXIF ; `thumb.webp` (420 px) = version affichée sur la carte, générée par add_photo.py.

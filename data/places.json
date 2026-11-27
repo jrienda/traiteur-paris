@@ -127,17 +127,6 @@
    "r": 2.31
   },
   {
-   "id": 10,
-   "label": "10",
-   "name": "Chez Eating",
-   "address": "45 Rue Volta, 75003 Paris",
-   "arr": "3e",
-   "lat": 48.866826,
-   "lng": 2.358053,
-   "gmaps": "https://www.google.com/maps/search/?api=1&query=Chez%20Eating%2C%2045%20Rue%20Volta%2C%2075003%20Paris&query_place_id=ChIJS7juq3dv5kcRnPpYcboCQp8",
-   "r": 0.77
-  },
-  {
    "id": 11,
    "label": "11",
    "name": "Chez Xu",
