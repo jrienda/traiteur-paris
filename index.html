@@ -21,6 +21,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var
 #base>*{position:absolute;inset:0;width:100%;height:100%}
 #grain{opacity:.55}
 #paper{background-color:var(--paper)}
+.legal{position:absolute;right:10px;bottom:6px;margin:0;font:400 9px/1 Syne,system-ui,sans-serif;letter-spacing:.06em;color:rgba(58,55,51,.42);z-index:5;pointer-events:none}
 #vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 120% 95% at 50% 45%,rgba(0,0,0,0) 55%,rgba(110,84,52,.10) 82%,rgba(90,66,40,.20));mix-blend-mode:multiply}
 #world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
 .pol{position:absolute;width:112px;height:134px;margin:-67px 0 0 -56px;cursor:pointer;transition:opacity .4s;contain:layout;filter:drop-shadow(0 .5px .45px rgba(0,0,0,.26)) drop-shadow(.8px 2.6px 2.6px rgba(20,15,10,.20)) drop-shadow(2px 6px 7px rgba(20,15,10,.12));}
@@ -85,6 +86,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var
 <div id="app" aria-label="Les traiteurs chinois — plan de Paris au trait fin avec les photos des traiteurs. Glissez, pincez pour zoomer, touchez une photo.">
 <div id="base"><div id="paper"></div><canvas id="cv"></canvas><div id="grain"></div></div>
 <div id="vig"></div>
+<p class="ui legal">Statistiques anonymes : pays et heure, sans cookies.</p>
 <div id="world"></div>
 <div class="ui title"><h1>Les traiteurs chinois</h1><h2>nourrissant <b id="cnt">0</b> histoires</h2></div>
 <div class="ui zc"><button id="zin" aria-label="Zoomer">+</button><button id="zout" aria-label="Dézoomer">−</button><button id="zfit" aria-label="Tout Paris"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button><button id="zrand" aria-label="Un polaroid au hasard"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button></div>
@@ -231,6 +233,7 @@ window.addEventListener('resize',()=>{if(F&&!busy){F.fc.style.transform=endT()}}
 window.addEventListener('resize',()=>{size();dirty=true;const r=app.getBoundingClientRect(),old=fitS;fitS=Math.min(r.width/W,r.height/H)*1.02;if(s<=old*1.01)fit();else req()});
 size();fit();
 {const r=app.getBoundingClientRect();if(r.height>r.width*1.2){const ns=Math.min(fitS*2.05,r.height/H*.95);s=ns;tx=r.width/2-W/2*s;ty=r.height/2-H*.48*s;apply()}}
+;try{if(!/^(localhost|127\.)/.test(location.hostname)&&!new URLSearchParams(location.search).has('nostat'))fetch('/api/hit',{method:'POST',keepalive:true}).catch(()=>{})}catch(e){}
 })()</script>
 </body>
 </html>

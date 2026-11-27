@@ -49,3 +49,9 @@ Les pièces jointes du chat Claude arrivent sans EXIF (pas de GPS ni date) : ide
 
 ## Développement
 Servir en local : `python3 -m http.server` (le fetch ne marche pas en file://). `?demo` affiche des cartes d'exemple si `visits.json` est vide.
+
+## Statistiques (anonymes)
+`api/hit.js` (fonction Vercel) : à chaque chargement de page, ajoute `{t:"HH:MM" UTC, c:"FR"}` à `stats/AAAA-MM-JJ.jsonl`
+sur la branche `stats` (aucune IP, aucun cookie, aucun identifiant). Nécessite la variable Vercel `GITHUB_TOKEN`
+(fine-grained, ce dépôt uniquement, Contents read/write). `?nostat` dans l'URL = visite non comptée.
+Résumé quotidien : lire `git show origin/stats:stats/<hier>.jsonl` et compter par pays.
